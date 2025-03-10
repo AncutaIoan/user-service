@@ -13,9 +13,7 @@ class RunSqlExtension : BeforeTestExecutionCallback {
     override fun beforeTestExecution(context: ExtensionContext?) {
         val testMethod = context?.testMethod?.orElse(null) ?: return
         val annotation = testMethod.getAnnotation(RunSql::class.java) ?: return
-        val testInstance = context.testInstance.orElseThrow {
-            RuntimeException("Test instance not found. ${javaClass.simpleName} is supposed to be used in JUnit 5 only!")
-        }
+        val testInstance = context.testInstance.orElseThrow { RuntimeException("Test instance not found. ${javaClass.simpleName} is supposed to be used in JUnit 5 only!") }
 
         getConnectionFactory(testInstance)?.let { connectionFactory ->
             annotation.scripts.forEach { script ->
@@ -26,11 +24,10 @@ class RunSqlExtension : BeforeTestExecutionCallback {
         }
     }
 
-    private fun getConnectionFactory(testInstance: Any): ConnectionFactory? {
-        return testInstance::class.memberProperties
+    private fun getConnectionFactory(testInstance: Any): ConnectionFactory? =
+        testInstance::class.memberProperties
             .find { it.name == "connectionFactory" }
             ?.apply { isAccessible = true }
             ?.getter
             ?.call(testInstance) as? ConnectionFactory
-    }
 }
