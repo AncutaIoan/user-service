@@ -1,4 +1,4 @@
-package config
+package user_service.config
 
 import io.r2dbc.spi.ConnectionFactory
 import org.junit.jupiter.api.extension.BeforeTestExecutionCallback

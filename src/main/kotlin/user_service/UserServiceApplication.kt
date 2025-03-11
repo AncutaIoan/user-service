@@ -1,4 +1,4 @@
-package adamicus
+package user_service
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
@@ -7,5 +7,5 @@ import org.springframework.boot.runApplication
 class UserServiceApplication
 
 fun main(args: Array<String>) {
-	runApplication<UserServiceApplication>(*args)
+    runApplication<UserServiceApplication>(*args)
 }

@@ -1,11 +1,12 @@
-package config
+package user_service.config
 
-import adamicus.config.R2DBCConfiguration
+import R2DBCConfiguration
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.boot.test.autoconfigure.data.r2dbc.DataR2dbcTest
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.context.annotation.Import
+import org.springframework.test.context.ActiveProfiles
 
 @DataR2dbcTest
 @Target(AnnotationTarget.CLASS)
@@ -13,4 +14,5 @@ import org.springframework.context.annotation.Import
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Import(R2DBCConfiguration::class)
 @Tag("integration-test")
+@ActiveProfiles("integration")
 annotation class TestcontainersIntegrationTest()
