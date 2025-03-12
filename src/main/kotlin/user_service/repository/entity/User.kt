@@ -1,6 +1,8 @@
+package user_service.repository.entity
+
 import org.springframework.data.annotation.Id
-import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
+import org.springframework.data.relational.core.mapping.Column
 import java.time.LocalDateTime
 
 @Table("users")

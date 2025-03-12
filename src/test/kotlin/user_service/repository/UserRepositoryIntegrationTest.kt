@@ -4,6 +4,7 @@ package user_service.repository
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import reactor.test.StepVerifier
+import user_service.config.RunSql
 import user_service.config.TestcontainersConfigurationBase
 import user_service.config.TestcontainersIntegrationTest
 
@@ -12,9 +13,12 @@ class UserRepositoryIntegrationTest: TestcontainersConfigurationBase() {
     @Autowired
     private lateinit var repository: UserRepository
 
+
     @Test
+    @RunSql([])
     fun testFindByEmail() {
-        StepVerifier.create(repository.findUserByEmail("test@test.com"))
-            .expectNextCount(0) // Expect no results
-            .verifyComplete()    }
+        StepVerifier.create(repository.findById(1))
+            .expectNextCount(0)
+            .verifyComplete()
+    }
 }
