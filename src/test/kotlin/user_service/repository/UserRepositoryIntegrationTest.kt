@@ -17,8 +17,7 @@ class UserRepositoryIntegrationTest: TestcontainersConfigurationBase() {
     @Test
     @RunSql([])
     fun testFindByEmail() {
-        StepVerifier.create(repository.findById(1))
-            .expectNextCount(0)
+        StepVerifier.create(repository.findById(1L ))
             .verifyComplete()
     }
 }

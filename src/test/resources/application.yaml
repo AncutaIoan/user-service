@@ -11,7 +11,3 @@ spring:
       url: jdbc:postgresql://localhost:5432/postgres
       baseline-on-migrate: true
       repair-on-migrate: true
-logging:
-  level:
-    org:
-      flywaydb=DEBUG:

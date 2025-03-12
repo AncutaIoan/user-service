@@ -1,6 +1,5 @@
 package user_service.config
 
-import R2DBCConfiguration
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.boot.test.autoconfigure.data.r2dbc.DataR2dbcTest

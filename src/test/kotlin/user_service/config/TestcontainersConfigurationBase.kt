@@ -19,16 +19,12 @@ abstract class TestcontainersConfigurationBase {
 	companion object {
 		private val log: Logger = LoggerFactory.getLogger(this::class.java)
 
-		private val postgres: PostgreSQLContainer<*> = PostgreSQLContainer(DockerImageName.parse("postgres:latest"))
+		private val postgres: PostgreSQLContainer<*> = PostgreSQLContainer(DockerImageName.parse("postgres:13.3"))
 			.apply {
 				this.withDatabaseName("testDb")
 					.withUsername("root")
 					.withPassword("123456")
-					.withReuse(true)
 			}
-
-//		private val redis: GenericContainer<*> = GenericContainer(DockerImageName.parse("redis:latest"))
-//			.withExposedPorts(6379)
 
 		fun r2dbcUrl(): String = "r2dbc:postgresql://${postgres.host}:${postgres.getMappedPort(PostgreSQLContainer.POSTGRESQL_PORT)}/${postgres.databaseName}"
 
@@ -39,14 +35,17 @@ abstract class TestcontainersConfigurationBase {
 			registry.add("spring.r2dbc.username", postgres::getUsername)
 			registry.add("spring.r2dbc.password", postgres::getPassword)
 			registry.add("spring.flyway.url", postgres::getJdbcUrl)
+			registry.add("spring.flyway.username", postgres::getUsername)
+			registry.add("spring.flyway.password", postgres::getPassword)
+			registry.add("spring.flyway.enabled") { true }
+
 		}
 
 		@JvmStatic
 		@BeforeAll
-		internal fun setup(): Unit {
+		internal fun setUp(): Unit {
 			postgres.start()
 			log.info("Testcontainers -> PostgresSQL DB started on [${r2dbcUrl()}] with user: root and password:123456")
-//			redis.start()
 		}
 
 	}
