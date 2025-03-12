@@ -11,7 +11,7 @@ import user_service.config.TestcontainersIntegrationTest
 @TestcontainersIntegrationTest
 class UserRepositoryIntegrationTest: TestcontainersConfigurationBase() {
     @Autowired
-    private lateinit var repository: UserRepository
+    lateinit var repository: UserRepository
 
 
     @Test

@@ -30,20 +30,16 @@ abstract class TestcontainersConfigurationBase {
 
 		@JvmStatic
 		@DynamicPropertySource
-		fun properties(registry: DynamicPropertyRegistry): Unit {
+		fun properties(registry: DynamicPropertyRegistry) {
 			registry.add("spring.r2dbc.url", ::r2dbcUrl)
 			registry.add("spring.r2dbc.username", postgres::getUsername)
 			registry.add("spring.r2dbc.password", postgres::getPassword)
 			registry.add("spring.flyway.url", postgres::getJdbcUrl)
-			registry.add("spring.flyway.username", postgres::getUsername)
-			registry.add("spring.flyway.password", postgres::getPassword)
-			registry.add("spring.flyway.enabled") { true }
-
 		}
 
 		@JvmStatic
 		@BeforeAll
-		internal fun setUp(): Unit {
+		internal fun setUp() {
 			postgres.start()
 			log.info("Testcontainers -> PostgresSQL DB started on [${r2dbcUrl()}] with user: root and password:123456")
 		}
