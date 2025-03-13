@@ -1,4 +1,4 @@
-package user_service.config
+package user_service.test_configuration
 
 import io.r2dbc.spi.ConnectionFactory
 import org.junit.jupiter.api.BeforeAll
@@ -31,7 +31,7 @@ abstract class TestcontainersConfigurationBase {
 		@JvmStatic
 		@DynamicPropertySource
 		fun properties(registry: DynamicPropertyRegistry) {
-			registry.add("spring.r2dbc.url", ::r2dbcUrl)
+			registry.add("spring.r2dbc.url", Companion::r2dbcUrl)
 			registry.add("spring.r2dbc.username", postgres::getUsername)
 			registry.add("spring.r2dbc.password", postgres::getPassword)
 			registry.add("spring.flyway.url", postgres::getJdbcUrl)
