@@ -1,8 +1,7 @@
-package user_service.service
-
-import org.assertj.core.api.Assertions.assertThatThrownBy
+import org.junit.jupiter.api.Test
+import org.assertj.core.api.Assertions.assertThat
 import user_service.config.PasswordConfig
-import kotlin.test.Test
+import user_service.service.PasswordValidationService
 
 internal class PasswordValidationServiceTest {
 
@@ -17,74 +16,74 @@ internal class PasswordValidationServiceTest {
     private val service = PasswordValidationService(passwordConfig)
 
     @Test
-    fun validate_whenPasswordTooShort_throwsErrorWith() {
-        assertThatThrownBy { service.validate("Short1!") }
-            .isInstanceOf(IllegalArgumentException::class.java)
-            .hasMessage("Password must be between 8 and 16 characters long.")
+    fun validate_whenPasswordTooShort_returnsFalse() {
+        val result = service.validate("Short1!").block()
+        assertThat(result).isEqualTo(false)
     }
 
     @Test
-    fun validate_whenPasswordTooLong_throwsErrorWith() {
-        assertThatThrownBy { service.validate("ThisPasswordIsWayTooLong1!") }
-            .isInstanceOf(IllegalArgumentException::class.java)
-            .hasMessage("Password must be between 8 and 16 characters long.")
+    fun validate_whenPasswordTooLong_returnsFalse() {
+        val result = service.validate("ThisPasswordIsWayTooLong1!").block()
+        assertThat(result).isEqualTo(false)
     }
 
     @Test
-    fun validate_whenMissingSpecialCharacter_throwsErrorWith() {
-        assertThatThrownBy { service.validate("Password1") }
-            .isInstanceOf(IllegalArgumentException::class.java)
-            .hasMessage("Password must contain at least one special character.")
+    fun validate_whenMissingSpecialCharacter_returnsFalse() {
+        val result = service.validate("Password1").block()
+        assertThat(result).isEqualTo(false)
     }
 
     @Test
-    fun validate_whenMissingUppercaseLetter_throwsErrorWith() {
-        assertThatThrownBy { service.validate("password1!") }
-            .isInstanceOf(IllegalArgumentException::class.java)
-            .hasMessage("Password must contain at least one uppercase letter.")
+    fun validate_whenMissingUppercaseLetter_returnsFalse() {
+        val result = service.validate("password1!").block()
+        assertThat(result).isEqualTo(false)
     }
 
     @Test
-    fun validate_whenMissingDigit_throwsErrorWith() {
-        assertThatThrownBy { service.validate("Password!") }
-            .isInstanceOf(IllegalArgumentException::class.java)
-            .hasMessage("Password must contain at least one digit.")
+    fun validate_whenMissingDigit_returnsFalse() {
+        val result = service.validate("Password!").block()
+        assertThat(result).isEqualTo(false)
     }
 
     @Test
-    fun validate_whenValidPassword_doesNotThrowError() {
-        service.validate("Valid1pass!")
+    fun validate_whenValidPassword_returnsTrue() {
+        val result = service.validate("Valid1pass!").block()
+        assertThat(result).isEqualTo(true)
     }
 
     @Test
-    fun validate_whenNoSpecialCharRequired_doesNotThrowError() {
+    fun validate_whenNoSpecialCharRequired_returnsTrue() {
         val relaxedConfig = passwordConfig.copy(requireSpecialChar = false)
         val relaxedService = PasswordValidationService(relaxedConfig)
-        relaxedService.validate("ValidPass1")
+        val result = relaxedService.validate("ValidPass1").block()
+        assertThat(result).isEqualTo(true)
     }
 
     @Test
-    fun validate_whenNoUppercaseRequired_doesNotThrowError() {
+    fun validate_whenNoUppercaseRequired_returnsTrue() {
         val relaxedConfig = passwordConfig.copy(requireUppercase = false)
         val relaxedService = PasswordValidationService(relaxedConfig)
-        relaxedService.validate("validpass1!")
+        val result = relaxedService.validate("validpass1!").block()
+        assertThat(result).isEqualTo(true)
     }
 
     @Test
-    fun validate_whenNoDigitRequired_doesNotThrowError() {
+    fun validate_whenNoDigitRequired_returnsTrue() {
         val relaxedConfig = passwordConfig.copy(requireDigit = false)
         val relaxedService = PasswordValidationService(relaxedConfig)
-        relaxedService.validate("ValidPass!")
+        val result = relaxedService.validate("ValidPass!").block()
+        assertThat(result).isEqualTo(true)
     }
 
     @Test
-    fun validate_whenAllRequirementsDisabled_doesNotThrowError() {
+    fun validate_whenAllRequirementsDisabled_returnsTrue() {
         val relaxedConfig = passwordConfig.copy(
             requireSpecialChar = false,
             requireUppercase = false,
             requireDigit = false
         )
         val relaxedService = PasswordValidationService(relaxedConfig)
-        relaxedService.validate("anypassword")
+        val result = relaxedService.validate("anypassword").block()
+        assertThat(result).isEqualTo(true)
     }
 }
