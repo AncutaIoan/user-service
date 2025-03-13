@@ -11,3 +11,13 @@ spring:
       url: jdbc:postgresql://localhost:5432/postgres
       baseline-on-migrate: true
       repair-on-migrate: true
+
+
+
+app:
+  password:
+    min-length: 8
+    max-length: 20
+    require-special-char: true
+    require-uppercase: true
+    require-digit: true
