@@ -7,7 +7,7 @@ import user_service.model.Result
 import user_service.repository.UserRepository
 
 @Service
-class UserService(
+class UserCreationService(
     private val userRepository: UserRepository,
     private val userCreationValidationService: UserCreationValidationService
 ) {
