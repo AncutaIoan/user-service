@@ -15,9 +15,16 @@ spring:
 
 
 app:
-  password:
-    min-length: 8
-    max-length: 20
-    require-special-char: true
-    require-uppercase: true
-    require-digit: true
+  constraints:
+    account:
+      emailRegex: "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$"
+      usernameMinLength: 3
+      usernameMaxLength: 20
+      nameMinLength: 1
+      nameMaxLength: 50
+    password:
+      min-length: 8
+      max-length: 20
+      require-special-char: true
+      require-uppercase: true
+      require-digit: true

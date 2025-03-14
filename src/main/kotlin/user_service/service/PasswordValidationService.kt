@@ -36,5 +36,4 @@ class PasswordValidationService(private val passwordConfig: PasswordConfig) {
 
     private fun validateDigit(password: String) =
         require(!(passwordConfig.requireDigit && password.none { it.isDigit() })) { "Password must contain at least one digit." }
-
 }
