@@ -1,6 +1,6 @@
 package user_service.service
 
-import com.sun.org.slf4j.internal.LoggerFactory
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
 import user_service.config.PasswordConfig
