@@ -15,8 +15,11 @@ class UserRepositoryIntegrationTest: TestcontainersConfigurationBase() {
 
 
     @Test
-    @RunSql([])
+    @RunSql(["postgres/scripts/insert_user.sql"])
     fun existsByEmailOrUsername() {
         assertThat(repository.existsByEmailOrUsername("someemail@gmail.com", "username").block()).isFalse
+        assertThat(repository.existsByEmailOrUsername("johndoe@example.com", "username").block()).isTrue
+        assertThat(repository.existsByEmailOrUsername("someemail@gmail.com", "johndoe").block()).isTrue
+        assertThat(repository.existsByEmailOrUsername("johndoe@example.com", "johndoe").block()).isTrue
     }
 }
