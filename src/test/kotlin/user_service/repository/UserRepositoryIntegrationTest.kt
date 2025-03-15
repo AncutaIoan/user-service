@@ -1,9 +1,9 @@
 package user_service.repository
 
 
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import reactor.test.StepVerifier
 import user_service.test_configuration.RunSql
 import user_service.test_configuration.TestcontainersConfigurationBase
 import user_service.test_configuration.TestcontainersIntegrationTest
@@ -16,8 +16,7 @@ class UserRepositoryIntegrationTest: TestcontainersConfigurationBase() {
 
     @Test
     @RunSql([])
-    fun testFindByEmail() {
-        StepVerifier.create(repository.findById(1L ))
-            .verifyComplete()
+    fun existsByEmailOrUsername() {
+        assertThat(repository.existsByEmailOrUsername("someemail@gmail.com", "username").block()).isFalse
     }
 }

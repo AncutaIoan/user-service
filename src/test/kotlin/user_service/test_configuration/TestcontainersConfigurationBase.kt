@@ -26,7 +26,7 @@ abstract class TestcontainersConfigurationBase {
 					.withPassword("123456")
 			}
 
-		fun r2dbcUrl(): String = "r2dbc:postgresql://${postgres.host}:${postgres.getMappedPort(PostgreSQLContainer.POSTGRESQL_PORT)}/${postgres.databaseName}"
+		private fun r2dbcUrl(): String = "r2dbc:postgresql://${postgres.host}:${postgres.getMappedPort(PostgreSQLContainer.POSTGRESQL_PORT)}/${postgres.databaseName}"
 
 		@JvmStatic
 		@DynamicPropertySource
@@ -43,6 +43,5 @@ abstract class TestcontainersConfigurationBase {
 			postgres.start()
 			log.info("Testcontainers -> PostgresSQL DB started on [${r2dbcUrl()}] with user: root and password:123456")
 		}
-
 	}
 }
