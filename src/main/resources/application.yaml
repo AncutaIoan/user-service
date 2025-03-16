@@ -1,17 +1,21 @@
-spring:
-    application:
-        name: user-service
-    r2dbc:
-        url: r2dbc:postgresql://localhost:5432/postgres
-        username: postgres
-        password: 12345
-    flyway:
-      user: ${spring.r2dbc.username}
-      password: ${spring.r2dbc.password}
-      url: jdbc:postgresql://localhost:5432/postgres
-      baseline-on-migrate: true
-      repair-on-migrate: true
+server:
+  port: 8081
+#  servlet:
+#    context-path: /user-service
 
+spring:
+  application:
+    name: user-service
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: 12345
+  flyway:
+    user: ${spring.r2dbc.username}
+    password: ${spring.r2dbc.password}
+    url: jdbc:postgresql://localhost:5432/postgres
+    baseline-on-migrate: true
+    repair-on-migrate: true
 
 
 app:
