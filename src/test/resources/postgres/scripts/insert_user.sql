@@ -1,3 +1,5 @@
+TRUNCATE TABLE users;
+
 INSERT INTO users (
     username,
     email,

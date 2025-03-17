@@ -22,4 +22,13 @@ class UserRepositoryIntegrationTest: TestcontainersConfigurationBase() {
         assertThat(repository.existsByEmailOrUsername("someemail@gmail.com", "johndoe").block()).isTrue
         assertThat(repository.existsByEmailOrUsername("johndoe@example.com", "johndoe").block()).isTrue
     }
+    @Test
+    @RunSql(["postgres/scripts/insert_user.sql"])
+    fun findByEmailAndPasswordHash() {
+        assertThat(repository.findByEmailAndPasswordHash("johndoe@example.com", "hashedpassword123").block())
+            .isNotNull
+            .matches {
+                it?.username == "johndoe"
+            }
+    }
 }
