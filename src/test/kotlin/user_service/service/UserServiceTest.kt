@@ -11,8 +11,8 @@ import reactor.core.publisher.Mono
 import user_service.model.CreateUserRequest
 import user_service.model.LoginRequest
 import user_service.model.LoginResponse
-import user_service.repository.UserRepository
 import user_service.model.Result
+import user_service.repository.UserRepository
 import user_service.repository.entity.User
 
 class UserServiceTest {
@@ -60,9 +60,9 @@ class UserServiceTest {
     @Test
     fun loginBy_whenUserExists_returnLoginResponse() {
         val request = LoginRequest("test@example.com", "ValidPass123!")
-        val user = User(null, "testuser", "test@example.com", "hashedPassword")
+        val user = User(null, "testuser", "test@example.com", "\$2a\$10\$bd7QAY3DtBKiBjZpRiy50u69s4zhusMtGfNvz.BQtbh1QoeIx8ose")
 
-        whenever(userRepository.findByEmailAndPasswordHash(eq(request.email), any())).thenReturn(Mono.just(user))
+        whenever(userRepository.findByEmail(eq(request.email))).thenReturn(Mono.just(user))
 
         val response = userService.loginBy(request).block()
 
@@ -74,7 +74,20 @@ class UserServiceTest {
     fun loginBy_whenUserNotFound_returnNotFound() {
         val request = LoginRequest("test@example.com", "InvalidPass")
 
-        whenever(userRepository.findByEmailAndPasswordHash(eq(request.email), any())).thenReturn(Mono.empty())
+        // Mocking the scenario where no user is found
+        whenever(userRepository.findByEmail(eq(request.email))).thenReturn(Mono.empty())
+
+        val response = userService.loginBy(request).block()
+
+        assertThat(response?.statusCode).isEqualTo(HttpStatus.NOT_FOUND)
+    }
+
+    @Test
+    fun loginBy_whenPasswordDoesNotMatch_returnNotFound() {
+        val request = LoginRequest("test@example.com", "InvalidPass")
+        val user = User(null, "testuser", "test@example.com", "$2a$10abcd1234hashvalue")
+
+        whenever(userRepository.findByEmail(eq(request.email))).thenReturn(Mono.just(user))
 
         val response = userService.loginBy(request).block()
 

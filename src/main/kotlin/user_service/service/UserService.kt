@@ -13,7 +13,7 @@ import user_service.repository.UserRepository
 @Service
 class UserService(
     private val userRepository: UserRepository,
-    private val userCreationValidationService: UserCreationValidationService
+    private val userCreationValidationService: UserCreationValidationService,
 ) {
 
     fun createUser(createUserRequest: CreateUserRequest): Mono<Result> {
@@ -27,13 +27,14 @@ class UserService(
     }
 
     fun loginBy(loginRequest: LoginRequest): Mono<ResponseEntity<LoginResponse>> =
-        userRepository.findByEmailAndPasswordHash(loginRequest.email, hashPassword(loginRequest.password))
+        userRepository.findByEmail(loginRequest.email)
+            .filter { match(loginRequest.password, it.passwordHash) }
             .map { user -> ResponseEntity.ok(LoginResponse.fromUser(user)) }
             .defaultIfEmpty(ResponseEntity.notFound().build())
 
 
-    private fun hashPassword(password: String): String {
+    private fun match(password: String, hashedPassword: String): Boolean {
         val passwordEncoder = BCryptPasswordEncoder()
-        return passwordEncoder.encode(password)
+        return passwordEncoder.matches(password, hashedPassword)
     }
 }
