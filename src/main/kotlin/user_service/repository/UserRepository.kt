@@ -8,4 +8,5 @@ import user_service.repository.entity.User
 @Repository
 interface UserRepository: R2dbcRepository<User, Long> {
     fun existsByEmailOrUsername(email: String, username: String): Mono<Boolean>
+    fun findByEmailAndPasswordHash(email: String, passwordHash: String): Mono<User>
 }
