@@ -64,32 +64,32 @@ class UserServiceTest {
 
         whenever(userRepository.findByEmail(eq(request.email))).thenReturn(Mono.just(user))
 
-        val response = userService.loginBy(request).block()
+        val response = userService.authenticate(request).block()
 
         assertThat(response?.statusCode).isEqualTo(HttpStatus.OK)
         assertThat(response?.body).isEqualTo(LoginResponse.fromUser(user))
     }
 
     @Test
-    fun loginBy_whenUserNotFound_returnNotFound() {
+    fun authenticate_whenUserNotFound_returnNotFound() {
         val request = LoginRequest("test@example.com", "InvalidPass")
 
         // Mocking the scenario where no user is found
         whenever(userRepository.findByEmail(eq(request.email))).thenReturn(Mono.empty())
 
-        val response = userService.loginBy(request).block()
+        val response = userService.authenticate(request).block()
 
         assertThat(response?.statusCode).isEqualTo(HttpStatus.NOT_FOUND)
     }
 
     @Test
-    fun loginBy_whenPasswordDoesNotMatch_returnNotFound() {
+    fun authenticate_whenPasswordDoesNotMatch_returnNotFound() {
         val request = LoginRequest("test@example.com", "InvalidPass")
         val user = User(null, "testuser", "test@example.com", "$2a$10abcd1234hashvalue")
 
         whenever(userRepository.findByEmail(eq(request.email))).thenReturn(Mono.just(user))
 
-        val response = userService.loginBy(request).block()
+        val response = userService.authenticate(request).block()
 
         assertThat(response?.statusCode).isEqualTo(HttpStatus.NOT_FOUND)
     }

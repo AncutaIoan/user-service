@@ -26,7 +26,7 @@ class UserService(
             }.onErrorResume { Mono.just(Result.INVALID("Error occurred, try again!")) }
     }
 
-    fun loginBy(loginRequest: LoginRequest): Mono<ResponseEntity<LoginResponse>> =
+    fun authenticate(loginRequest: LoginRequest): Mono<ResponseEntity<LoginResponse>> =
         userRepository.findByEmail(loginRequest.email)
             .filter { match(loginRequest.password, it.passwordHash) }
             .map { user -> ResponseEntity.ok(LoginResponse.fromUser(user)) }

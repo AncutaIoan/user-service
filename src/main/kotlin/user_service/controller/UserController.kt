@@ -18,7 +18,7 @@ class UserController(
     fun create(@RequestBody createUserRequest: CreateUserRequest) =
         userService.createUser(createUserRequest)
 
-    @PostMapping("/login")
-    fun login(@RequestBody loginRequest: LoginRequest) =
-        userService.loginBy(loginRequest)
+    @PostMapping("/authenticate")
+    fun authenticate(@RequestBody loginRequest: LoginRequest) =
+        userService.authenticate(loginRequest)
 }
