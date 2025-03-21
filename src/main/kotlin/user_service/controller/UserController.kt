@@ -1,9 +1,6 @@
 package user_service.controller
 
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import user_service.model.CreateUserRequest
 import user_service.model.LoginRequest
 import user_service.service.UserService
@@ -21,4 +18,7 @@ class UserController(
     @PostMapping("/authenticate")
     fun authenticate(@RequestBody loginRequest: LoginRequest) =
         userService.authenticate(loginRequest)
+
+    @GetMapping("/test-endpoint")
+    fun testEndpoint(@RequestHeader(value = "X-JWS-Payload", required = false) jwsPayload: String?) = jwsPayload
 }
