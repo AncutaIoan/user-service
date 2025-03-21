@@ -10,7 +10,7 @@ import org.springframework.http.HttpStatus
 import reactor.core.publisher.Mono
 import user_service.model.CreateUserRequest
 import user_service.model.LoginRequest
-import user_service.model.LoginResponse
+import user_service.model.UserPayload
 import user_service.model.Result
 import user_service.repository.UserRepository
 import user_service.repository.entity.User
@@ -67,7 +67,7 @@ class UserServiceTest {
         val response = userService.authenticate(request).block()
 
         assertThat(response?.statusCode).isEqualTo(HttpStatus.OK)
-        assertThat(response?.body).isEqualTo(LoginResponse.fromUser(user))
+        assertThat(response?.body).isEqualTo(UserPayload.fromUser(user))
     }
 
     @Test
