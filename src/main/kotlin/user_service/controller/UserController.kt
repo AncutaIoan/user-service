@@ -1,6 +1,8 @@
 package user_service.controller
 
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import reactor.kotlin.core.publisher.toMono
 import user_service.model.CreateUserRequest
 import user_service.model.LoginRequest
 import user_service.service.UserService
@@ -20,5 +22,5 @@ class UserController(
         userService.authenticate(loginRequest)
 
     @GetMapping("/test-endpoint")
-    fun testEndpoint(@RequestHeader(value = "X-JWS-Payload", required = false) jwsPayload: String?) = jwsPayload
+    fun testEndpoint(@RequestHeader(value = "X-JWS-Payload", required = false) jwsPayload: String?) = ResponseEntity.ok().body(jwsPayload).toMono()
 }
