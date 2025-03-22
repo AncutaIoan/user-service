@@ -15,11 +15,11 @@ import user_service.model.Result
 import user_service.repository.UserRepository
 import user_service.repository.entity.User
 
-class UserServiceTest {
+class UserAuthServiceTest {
 
     private val userRepository: UserRepository = mock(UserRepository::class.java)
     private val userCreationValidationService: UserCreationValidationService = mock(UserCreationValidationService::class.java)
-    private val userService = UserService(userRepository, userCreationValidationService)
+    private val userAuthService = UserAuthService(userRepository, userCreationValidationService)
 
     @Test
     fun createUser_whenValidationFails_returnInvalid() {
@@ -27,7 +27,7 @@ class UserServiceTest {
 
         whenever(userCreationValidationService.validate(request)).thenReturn(Mono.just(Result.INVALID("Invalid data")))
 
-        val result = userService.createUser(request).block()
+        val result = userAuthService.createUser(request).block()
 
         assertThat(result).isEqualTo(Result.INVALID("Invalid data"))
     }
@@ -40,7 +40,7 @@ class UserServiceTest {
         whenever(userCreationValidationService.validate(request)).thenReturn(Mono.just(Result.VALID))
         whenever(userRepository.save(any())).thenReturn(Mono.just(user))
 
-        val result = userService.createUser(request).block()
+        val result = userAuthService.createUser(request).block()
 
         assertThat(result).isEqualTo(Result.VALID)
     }
@@ -52,7 +52,7 @@ class UserServiceTest {
         whenever(userCreationValidationService.validate(request)).thenReturn(Mono.just(Result.VALID))
         whenever(userRepository.save(any())).thenReturn(Mono.error(RuntimeException("DB error")))
 
-        val result = userService.createUser(request).block()
+        val result = userAuthService.createUser(request).block()
 
         assertThat(result).isEqualTo(Result.INVALID("Error occurred, try again!"))
     }
@@ -64,7 +64,7 @@ class UserServiceTest {
 
         whenever(userRepository.findByEmail(eq(request.email))).thenReturn(Mono.just(user))
 
-        val response = userService.authenticate(request).block()
+        val response = userAuthService.authenticate(request).block()
 
         assertThat(response?.statusCode).isEqualTo(HttpStatus.OK)
         assertThat(response?.body).isEqualTo(UserPayload.fromUser(user))
@@ -77,7 +77,7 @@ class UserServiceTest {
         // Mocking the scenario where no user is found
         whenever(userRepository.findByEmail(eq(request.email))).thenReturn(Mono.empty())
 
-        val response = userService.authenticate(request).block()
+        val response = userAuthService.authenticate(request).block()
 
         assertThat(response?.statusCode).isEqualTo(HttpStatus.NOT_FOUND)
     }
@@ -89,7 +89,7 @@ class UserServiceTest {
 
         whenever(userRepository.findByEmail(eq(request.email))).thenReturn(Mono.just(user))
 
-        val response = userService.authenticate(request).block()
+        val response = userAuthService.authenticate(request).block()
 
         assertThat(response?.statusCode).isEqualTo(HttpStatus.NOT_FOUND)
     }
