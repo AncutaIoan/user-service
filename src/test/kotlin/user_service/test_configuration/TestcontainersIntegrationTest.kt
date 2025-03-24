@@ -13,4 +13,4 @@ import user_service.config.R2DBCConfiguration
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Import(R2DBCConfiguration::class)
 @Tag("integration-test")
-annotation class TestcontainersIntegrationTest()
+annotation class TestcontainersIntegrationTest

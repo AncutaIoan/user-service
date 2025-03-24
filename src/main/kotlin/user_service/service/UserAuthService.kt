@@ -1,5 +1,6 @@
 package user_service.service
 
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
@@ -16,15 +17,16 @@ class UserAuthService(
     private val userCreationValidationService: UserCreationValidationService,
 ) {
 
-    fun createUser(createUserRequest: CreateUserRequest): Mono<Result> {
-        return userCreationValidationService.validate(createUserRequest)
+    fun createUser(createUserRequest: CreateUserRequest) =
+        userCreationValidationService.validate(createUserRequest)
             .flatMap { validationResult ->
                 when (validationResult) {
-                    is Result.VALID -> { userRepository.save(createUserRequest.toUser()).then(Mono.just(validationResult)) }
-                    is Result.INVALID -> { Mono.just(validationResult) }
+                    is Result.VALID -> { userRepository.save(createUserRequest.toUser()).then(Mono.just(ResponseEntity.status(HttpStatus.CREATED).build())) }
+                    is Result.INVALID -> { Mono.just(ResponseEntity.status(HttpStatus.BAD_REQUEST).body(validationResult)) }
                 }
-            }.onErrorResume { Mono.just(Result.INVALID("Error occurred, try again!")) }
-    }
+            }
+            .onErrorResume { Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Result.INVALID("Error occurred, try again!"))) }
+
 
     fun authenticate(loginRequest: LoginRequest): Mono<ResponseEntity<UserPayload>> =
         userRepository.findByEmail(loginRequest.email)

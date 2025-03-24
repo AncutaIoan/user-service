@@ -27,9 +27,10 @@ class UserAuthServiceTest {
 
         whenever(userCreationValidationService.validate(request)).thenReturn(Mono.just(Result.INVALID("Invalid data")))
 
-        val result = userAuthService.createUser(request).block()
+        val response = userAuthService.createUser(request).block()
 
-        assertThat(result).isEqualTo(Result.INVALID("Invalid data"))
+        assertThat(response?.statusCode).isEqualTo(HttpStatus.BAD_REQUEST)
+        assertThat(response?.body).isEqualTo(Result.INVALID("Invalid data"))
     }
 
     @Test
@@ -40,9 +41,9 @@ class UserAuthServiceTest {
         whenever(userCreationValidationService.validate(request)).thenReturn(Mono.just(Result.VALID))
         whenever(userRepository.save(any())).thenReturn(Mono.just(user))
 
-        val result = userAuthService.createUser(request).block()
+        val response = userAuthService.createUser(request).block()
 
-        assertThat(result).isEqualTo(Result.VALID)
+        assertThat(response?.statusCode).isEqualTo(HttpStatus.CREATED)
     }
 
     @Test
@@ -52,9 +53,10 @@ class UserAuthServiceTest {
         whenever(userCreationValidationService.validate(request)).thenReturn(Mono.just(Result.VALID))
         whenever(userRepository.save(any())).thenReturn(Mono.error(RuntimeException("DB error")))
 
-        val result = userAuthService.createUser(request).block()
+        val response = userAuthService.createUser(request).block()
 
-        assertThat(result).isEqualTo(Result.INVALID("Error occurred, try again!"))
+        assertThat(response?.statusCode).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR)
+        assertThat(response?.body).isEqualTo(Result.INVALID("Error occurred, try again!"))
     }
 
     @Test
@@ -74,7 +76,6 @@ class UserAuthServiceTest {
     fun authenticate_whenUserNotFound_returnNotFound() {
         val request = LoginRequest("test@example.com", "InvalidPass")
 
-        // Mocking the scenario where no user is found
         whenever(userRepository.findByEmail(eq(request.email))).thenReturn(Mono.empty())
 
         val response = userAuthService.authenticate(request).block()
