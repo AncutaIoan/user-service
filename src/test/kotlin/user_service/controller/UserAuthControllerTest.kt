@@ -1,19 +1,24 @@
 package user_service.controller
 
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
 import org.springframework.test.web.reactive.server.WebTestClient
+import user_service.test_configuration.RunSql
+import user_service.test_configuration.RunSqlExtension
 import user_service.test_configuration.TestcontainersConfigurationBase
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ExtendWith(RunSqlExtension::class)
 class UserAuthControllerTest : TestcontainersConfigurationBase() {
 
     @Autowired
     lateinit var webTestClient: WebTestClient
 
     @Test
+    @RunSql(["postgres/scripts/truncate_users.sql"])
     fun createUser_whenSuccess_returnResultSuccess() {
         val body = """
                         {
@@ -37,6 +42,7 @@ class UserAuthControllerTest : TestcontainersConfigurationBase() {
 
 
     @Test
+    @RunSql(["postgres/scripts/truncate_users.sql"])
     fun authenticate_whenSuccess_returnUserPayload() {
         val createUserRequest = """
                                     {
